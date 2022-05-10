@@ -124,17 +124,18 @@ impl LookupErrorKind {
   #[cfg(windows)]
   /// Create a `LookupErrorKind` from a `gai` error.
   pub fn new(err: i32) -> Self {
-    use winapi::shared::winerror as e;
-    match err as u32 {
-      e::WSATRY_AGAIN => LookupErrorKind::Again,
-      e::WSAEINVAL => LookupErrorKind::Badflags,
-      e::WSANO_RECOVERY => LookupErrorKind::Fail,
-      e::WSAEAFNOSUPPORT => LookupErrorKind::Family,
-      e::ERROR_NOT_ENOUGH_MEMORY => LookupErrorKind::Memory,
-      e::WSAHOST_NOT_FOUND => LookupErrorKind::NoName,
-      e::WSANO_DATA => LookupErrorKind::NoData,
-      e::WSATYPE_NOT_FOUND => LookupErrorKind::Service,
-      e::WSAESOCKTNOSUPPORT => LookupErrorKind::Socktype,
+    use windows_sys::Win32::Networking::WinSock as se;
+    use windows_sys::Win32::Foundation as fe;
+    match err {
+      se::WSATRY_AGAIN => LookupErrorKind::Again,
+      se::WSAEINVAL => LookupErrorKind::Badflags,
+      se::WSANO_RECOVERY => LookupErrorKind::Fail,
+      se::WSAEAFNOSUPPORT => LookupErrorKind::Family,
+      fe::ERROR_NOT_ENOUGH_MEMORY as i32 => LookupErrorKind::Memory,
+      se::WSAHOST_NOT_FOUND => LookupErrorKind::NoName,
+      se::WSANO_DATA => LookupErrorKind::NoData,
+      se::WSATYPE_NOT_FOUND => LookupErrorKind::Service,
+      se::WSAESOCKTNOSUPPORT => LookupErrorKind::Socktype,
       _ => LookupErrorKind::IO,
     }
   }
@@ -210,7 +211,7 @@ pub(crate) fn gai_err_to_io_err(err: i32) -> io::Error {
 /// the appropriate error message. Note `0` is not an
 /// error, but will still map to an error
 pub(crate) fn gai_err_to_io_err(err: i32) -> io::Error {
-  use winapi::um::winsock2::WSAGetLastError;
+  use windows_sys::Win32::Networking::WinSock::WSAGetLastError;
   match err {
     0 => io::Error::new(
       io::ErrorKind::Other,
