@@ -123,6 +123,18 @@ impl LookupErrorKind {
 
     #[cfg(windows)]
     /// Create a `LookupErrorKind` from a `gai` error.
+    ///
+    /// |                       | winapi   | windows_sys |
+    /// |-----------------------|----------|-------------|
+    /// | WSATRY_AGAIN          | 11002u32 | 11002i32    |
+    /// | WSAEINVAL             | 10022u32 | 10022i32    |
+    /// | WSANO_RECOVERY        | 11003u32 | 11003i32    |
+    /// | WSAEAFNOSUPPORT       | 10047u32 | 10047i32    |
+    /// | WSA_NOT_ENOUGH_MEMORY | 8i32     | 8i32        |
+    /// | WSAHOST_NOT_FOUND     | 11001u32 | 11001i32    |
+    /// | WSANO_DATA            | 11004u32 | 11004i32    |
+    /// | WSATYPE_NOT_FOUND     | 10109u32 | 10109i32    |
+    /// | WSAESOCKTNOSUPPORT    | 10044u32 | 10044i32    |
     pub fn new(err: i32) -> Self {
         // use winapi::shared::winerror as e;
 
