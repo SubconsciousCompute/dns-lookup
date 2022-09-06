@@ -17,8 +17,8 @@ use winapi::shared::ws2def::{NI_NUMERICSERV, SOCK_STREAM};
 #[cfg(windows)]
 use windows_sys::Win32::Networking::WinSock::{NI_NUMERICSERV, SOCK_STREAM};
 
-use addrinfo::{getaddrinfo, AddrInfoHints};
-use nameinfo::getnameinfo;
+use crate::addrinfo::{getaddrinfo, AddrInfoHints};
+use crate::nameinfo::getnameinfo;
 
 /// Lookup the address for a given hostname via DNS.
 ///
@@ -90,7 +90,7 @@ fn test_rev_localhost() {
 #[test]
 fn test_hostname() {
     // Get machine's hostname.
-    let hostname = ::hostname::get_hostname().unwrap();
+    let hostname = crate::hostname::get_hostname().unwrap();
 
     // Do reverse lookup of 127.0.0.1.
     let rev_name = lookup_addr(&IpAddr::V4("127.0.0.1".parse().unwrap()));
