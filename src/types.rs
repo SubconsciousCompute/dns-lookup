@@ -31,6 +31,12 @@ pub enum SockType {
     RDM,
 }
 
+/// |             | libc | winapi | windows_sys |
+/// |-------------|------|--------|-------------|
+/// | SOCK_STREAM | 1i32 | 1i32   | 1u16        |
+/// | SOCK_DGRAM  | 2i32 | 2i32   | 2u16        |
+/// | SOCK_RAW    | 3i32 | 3i32   | 3u16        |
+/// | SOCK_RDM    | 4i32 | 4i32   | 4u16        |
 impl From<SockType> for c_int {
     fn from(sock: SockType) -> c_int {
         match sock {
@@ -72,22 +78,17 @@ pub enum Protocol {
     UDP,
 }
 
+/// |              | libc  | winapi | windows_sys |
+/// |--------------|-------|--------|-------------|
+/// | IPPROTO_ICMP | 1i32  | 1u32   | 1i32        |
+/// | IPPROTO_TCP  | 6i32  | 6u32   | 6i32        |
+/// | IPPROTO_UDP  | 17i32 | 17u32  | 17i32       |
 impl From<Protocol> for c_int {
-    #[cfg(unix)]
     fn from(sock: Protocol) -> c_int {
         match sock {
             Protocol::ICMP => c::IPPROTO_ICMP,
             Protocol::TCP => c::IPPROTO_TCP,
             Protocol::UDP => c::IPPROTO_UDP,
-        }
-    }
-
-    #[cfg(windows)]
-    fn from(sock: Protocol) -> c_int {
-        match sock {
-            Protocol::ICMP => c::IPPROTO_ICMP as c_int,
-            Protocol::TCP => c::IPPROTO_TCP as c_int,
-            Protocol::UDP => c::IPPROTO_UDP as c_int,
         }
     }
 }
@@ -119,7 +120,11 @@ pub enum AddrFamily {
     /// IP version 6.
     Inet6,
 }
-
+/// |          | libc  | winapi | windows_sys |
+/// |----------|-------|--------|-------------|
+/// | AF_UNIX  | 1i32  | 1i32   | 1u16        |
+/// | AF_INET  | 2i32  | 2i32   | 2u32        |
+/// | AF_INET6 | 10i32 | 23i32  | 23u32       |
 impl From<AddrFamily> for c_int {
     fn from(sock: AddrFamily) -> c_int {
         match sock {

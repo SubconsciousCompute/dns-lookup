@@ -1,3 +1,7 @@
+/// |                | libc | winapi | windows_sys |
+/// |----------------|------|--------|-------------|
+/// | NI_NUMERICSERV | 2i32 | 8i32   | 8u32        |
+/// | SOCK_STREAM    | 1i32 | 1i32   | 1u16        |
 use std::io;
 use std::net::IpAddr;
 use std::str;
